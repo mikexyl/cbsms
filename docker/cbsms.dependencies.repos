@@ -1,0 +1,61 @@
+repositories:
+  src/gtsam:
+    type: git
+    url: https://github.com/borglab/gtsam.git
+    version: 4.1.1
+  src/aria_common:
+    type: git
+    url: git@github.com:mikexyl/aria_common.git
+    version: kimera-ros2
+  src/aria_viz:
+    type: git
+    url: git@github.com:mikexyl/aria_visualization.git
+    version: kimera-ros2
+  src/Kimera-RPGO:
+    type: git
+    url: https://github.com/MIT-SPARK/Kimera-RPGO.git
+    version: master
+  src/catkin_simple:
+    type: git
+    url: https://github.com/catkin/catkin_simple.git
+    version: master
+  src/cmake_external_project_catkin:
+    type: git
+    url: https://github.com/zurich-eye/cmake_external_project_catkin.git
+    version: master
+  src/dbow2_catkin:
+    type: git
+    url: https://github.com/MIT-SPARK/dbow2_catkin.git
+    version: master
+  src/disparity_image_proc:
+    type: git
+    url: https://github.com/MIT-SPARK/disparity_image_proc.git
+    version: master
+  src/gflags_catkin:
+    type: git
+    url: https://github.com/ethz-asl/gflags_catkin.git
+    version: master
+  src/glog_catkin:
+    type: git
+    url: https://github.com/ethz-asl/glog_catkin.git
+    version: master
+  src/kimera_rviz_markers:
+    type: git
+    url: https://github.com/MIT-SPARK/kimera_rviz_markers.git
+    version: master
+  src/mesh_rviz_plugins:
+    type: git
+    url: https://github.com/MIT-SPARK/mesh_rviz_plugins.git
+    version: master
+  src/opencv3_catkin:
+    type: git
+    url: https://github.com/ethz-asl/opencv3_catkin.git
+    version: master
+  src/opengv_catkin:
+    type: git
+    url: https://github.com/MIT-SPARK/opengv_catkin.git
+    version: master
+  src/pose_graph_tools:
+    type: git
+    url: https://github.com/MIT-SPARK/pose_graph_tools.git
+    version: master

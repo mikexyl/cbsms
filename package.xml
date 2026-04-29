@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>cbsms</name>
+  <version>0.0.1</version>
+  <description>Metapackage for the CBS multi-sensor mapping stack.</description>
+
+  <maintainer email="liu.xiangyu@ucy.ac.cy">Mike Xiangyu Liu</maintainer>
+  <license>BSD</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <exec_depend>cbs</exec_depend>
+  <exec_depend>liorf</exec_depend>
+  <exec_depend>kimera_vio</exec_depend>
+  <exec_depend>kimera_vio_ros</exec_depend>
+  <exec_depend>aria_common</exec_depend>
+  <exec_depend>aria_viz</exec_depend>
+  <exec_depend>gtsam</exec_depend>
+  <exec_depend>rerun_sdk</exec_depend>
+
+  <export>
+    <metapackage />
+  </export>
+</package>

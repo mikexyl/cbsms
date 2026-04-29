@@ -1,0 +1,23 @@
+services:
+  cbsms:
+    container_name: cbsms_ws
+    build:
+      context: ../../..
+      dockerfile: src/cbsms/docker/Dockerfile
+      args:
+        CBSMS_UID: "${CBSMS_DOCKER_UID:-1000}"
+        CBSMS_GID: "${CBSMS_DOCKER_GID:-1000}"
+    image: cbsms:noetic
+    init: true
+    tty: true
+    stdin_open: true
+    user: "${CBSMS_DOCKER_UID:-1000}:${CBSMS_DOCKER_GID:-1000}"
+    working_dir: /workspace
+    volumes:
+      - ../../..:/workspace
+      - ${SSH_AUTH_SOCK:-/tmp/ssh-agent.sock}:/ssh-agent
+    environment:
+      HOME: /home/cbsms
+      SSH_AUTH_SOCK: /ssh-agent
+      CBSMS_WORKSPACE: /workspace
+    command: tail -f /dev/null
