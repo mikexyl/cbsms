@@ -34,9 +34,21 @@ For an interactive shell in the same persistent container:
 src/cbsms/docker/shell.sh
 ```
 
-The build script imports missing repositories from `cbsms.repos` and
-`src/cbsms/docker/cbsms.dependencies.repos`. The Aria dependencies use the
-latest branch by commit date, `kimera-ros2`, from:
+The build script imports missing repositories from a root-level `cbsms.repos`
+when present, otherwise from `src/cbsms/cbsms.repos`, plus
+`src/cbsms/docker/cbsms.dependencies.repos`. The package-local manifest is the
+self-contained bootstrap source for fresh workspaces.
+
+Current first-party entries are pinned to exact commits. Branch names for
+orientation are:
+
+- `cbs`: `fresh-rebuild`
+- `liorf`: `dev/cbsms`
+- `Kimera-VIO`: `dev/cbsms`
+- `Kimera-VIO-ROS`: `dev/cbsms`
+- `rerun_sdk`: `main`
+
+The Aria dependencies use the latest branch by commit date, `kimera-ros2`, from:
 
 - `git@github.com:mikexyl/aria_common.git`
 - `git@github.com:mikexyl/aria_visualization.git`

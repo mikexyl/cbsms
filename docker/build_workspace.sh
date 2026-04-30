@@ -33,8 +33,18 @@ cmake_args=(
 )
 
 if [[ "${CBSMS_IMPORT_REPOS:-1}" == "1" ]]; then
-  vcs import --skip-existing --input cbsms.repos .
-  vcs import --skip-existing --input src/cbsms/docker/cbsms.dependencies.repos .
+  first_party_repos="${CBSMS_FIRST_PARTY_REPOS:-}"
+  if [[ -z "${first_party_repos}" ]]; then
+    if [[ -f cbsms.repos ]]; then
+      first_party_repos="cbsms.repos"
+    else
+      first_party_repos="src/cbsms/cbsms.repos"
+    fi
+  fi
+  dependency_repos="${CBSMS_DEPENDENCY_REPOS:-src/cbsms/docker/cbsms.dependencies.repos}"
+
+  vcs import --skip-existing --input "${first_party_repos}" .
+  vcs import --skip-existing --input "${dependency_repos}" .
 fi
 
 catkin init

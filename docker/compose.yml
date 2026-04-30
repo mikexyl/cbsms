@@ -15,9 +15,12 @@ services:
     working_dir: /workspace
     volumes:
       - ../../..:/workspace
+      - /data/s3e:/data/s3e:ro
       - ${SSH_AUTH_SOCK:-/tmp/ssh-agent.sock}:/ssh-agent
     environment:
       HOME: /home/cbsms
       SSH_AUTH_SOCK: /ssh-agent
       CBSMS_WORKSPACE: /workspace
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     command: tail -f /dev/null

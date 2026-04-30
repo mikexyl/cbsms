@@ -1,0 +1,21 @@
+repositories:
+  src/cbs:
+    type: git
+    url: git@github.com:mikexyl/cbs.git
+    version: c8fb9f86722091c3d8f695d50d8f0d6effc07cee
+  src/liorf:
+    type: git
+    url: git@github.com:mikexyl/liorf.git
+    version: 92f3434c85bd74ffe42d49997aa42637f4f8e6f4
+  src/Kimera-VIO:
+    type: git
+    url: git@github.com:mikexyl/Kimera-VIO.git
+    version: 5632d1ebe0266fc95a218f05864b10f9723ddfff
+  src/Kimera-VIO-ROS:
+    type: git
+    url: git@github.com:mikexyl/Kimera-VIO-ROS.git
+    version: f14c0487c488fb3fe024174ebfc25d7defca5a08
+  src/rerun_sdk:
+    type: git
+    url: git@github.com:mikexyl/rerun_sdk.git
+    version: e6d6c1b3976410ee1594ae0ea67e6048f6bd364c
