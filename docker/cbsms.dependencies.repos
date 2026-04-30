@@ -1,12 +1,12 @@
 repositories:
   src/gtsam:
     type: git
-    url: https://github.com/borglab/gtsam.git
-    version: 69a3a751195b65356d6e56669e5199d325c7962c9
+    url: git@github.com:mikexyl/gtsam.git
+    version: bc72d8b34e1a77002724bd1ff6714c7832fdb5e0
   src/aria_common:
     type: git
     url: git@github.com:mikexyl/aria_common.git
-    version: 1c39a5038df1cd7e6f29c9b7778b4ca693e66115
+    version: bc12e58275e2cc136f8f58e00bd8f37bdd8c4bf7
   src/aria_viz:
     type: git
     url: git@github.com:mikexyl/aria_visualization.git

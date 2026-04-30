@@ -140,9 +140,10 @@ package, then update the relevant `.repos` SHA in `src/cbsms`.
 
 Use the exact commit SHAs in `cbsms.repos` and
 `docker/cbsms.dependencies.repos`. Branch names are orientation only:
-`cbs` is from `fresh-rebuild`, `liorf`, `Kimera-VIO`, and `Kimera-VIO-ROS` are
-from `dev/cbsms`, `aria_common` and `aria_viz` are from `kimera-ros2`, and
-`gtsam` is the 4.1.1 checkout.
+`cbs` is from `prior-belief-factors`, `liorf`, `Kimera-VIO`, and
+`Kimera-VIO-ROS` are from `dev/cbsms`, `aria_common` and `aria_viz` are from
+`kimera-ros2`, and `gtsam` is a `mikexyl/gtsam` CBSMS branch based on the 4.1.1
+checkout.
 
 These manifests reproduce committed HEADs only. Check for dirty package state
 before claiming a workspace is exactly reproducible.
