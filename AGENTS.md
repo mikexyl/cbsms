@@ -87,6 +87,15 @@ Actual RViz process startup is not required for the Rerun checks unless the user
 explicitly asks to open RViz. Use `enable_cbs_bridge:=false` for the isolated
 baseline.
 
+Kimera visualization in this ROS wrapper has two separate concepts that are
+easy to confuse: `kimera_use_ros_visualizer` controls whether `RosVisualizer`
+is constructed, which is required for Kimera ROS publishers and Rerun logging;
+`use_kimera_rviz` controls the optional `RosDisplay` image sink. Headless Docker
+Rerun-only runs should keep `kimera_visualize:=true` and
+`kimera_use_ros_visualizer:=true`, while leaving `use_kimera_rviz:=false` and
+`use_liorf_rviz:=false`. Do not disable `kimera_visualize` just to avoid a
+display crash, because that also stops Kimera from feeding `RosVisualizer`.
+
 Latest known 60 second CBS run from 2026-04-30:
 
 - Kimera and LiORF both streamed visualization data to Rerun.

@@ -10,6 +10,7 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <exec_depend>cbs</exec_depend>
+  <exec_depend>cbsms_adaptive_weighting</exec_depend>
   <exec_depend>liorf</exec_depend>
   <exec_depend>kimera_vio</exec_depend>
   <exec_depend>kimera_vio_ros</exec_depend>

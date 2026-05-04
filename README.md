@@ -38,6 +38,10 @@ package-local manifest if present.
 - `src/cbsms/docker/compose.yml`: persistent `cbsms_ws` container.
 - `src/cbsms/docker/build_workspace.sh`: import/build implementation.
 - `src/{cbs,liorf,Kimera-VIO,Kimera-VIO-ROS}`: core packages.
+- `src/cbsms_adaptive_weighting`: standalone adaptive visual/LiDAR weighting
+  products for later optimizer integration. The current implementation is
+  unvalidated for odometry use; it publishes and visualizes weights, but those
+  weights have not yet been consumed by Kimera or LiORF optimizers.
 - `build/`, `devel/`, `install/`, `logs/`: generated host-side catkin folders.
 
 ## Docker Workflow

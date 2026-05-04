@@ -6,11 +6,11 @@ repositories:
   src/aria_common:
     type: git
     url: git@github.com:mikexyl/aria_common.git
-    version: bc12e58275e2cc136f8f58e00bd8f37bdd8c4bf7
+    version: 5c3a8704e5ff3438148c01d1063194f65b5509ca
   src/aria_viz:
     type: git
     url: git@github.com:mikexyl/aria_visualization.git
-    version: d628a4ab86e17f3a5193fe967ff7cbc582be661b
+    version: da78bcc1fc9cae49e7c3d6a64d74b9b79df2ce8e
   src/Kimera-RPGO:
     type: git
     url: https://github.com/MIT-SPARK/Kimera-RPGO.git
