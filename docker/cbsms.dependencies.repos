@@ -2,7 +2,7 @@ repositories:
   src/gtsam:
     type: git
     url: git@github.com:mikexyl/gtsam.git
-    version: bc72d8b34e1a77002724bd1ff6714c7832fdb5e0
+    version: c1a57d471b920dcba5add66289d56280217c1b00
   src/aria_common:
     type: git
     url: git@github.com:mikexyl/aria_common.git

@@ -75,6 +75,26 @@ Use `enable_cbs_bridge:=false` for an isolated baseline. Rerun streams to
 `rerun+http://172.18.0.1:9876/proxy` by default so the host viewer can see data
 from inside Docker.
 
+## Experiment Reports
+
+For repeatable CBS runs with trajectory and belief-exchange metrics, use the
+host-side report runner:
+
+```bash
+src/cbsms/tools/cbsms_experiment.py run --name s3e-square1-cbs --duration 60
+```
+
+It writes a run folder under `runs/` with `summary.md`, `summary.json`, raw
+odometry CSVs, parsed CBS transport/roundtrip/merge CSVs, covariance summaries,
+40-sample injected-belief covariance tables, TUM trajectories, evo APE/RPE
+metrics when `evo` is installed, and RMSE-style trajectory metrics. See
+[`docs/experiment_reports.md`](docs/experiment_reports.md) for the full
+workflow and common variants.
+
+For the current working understanding of the same-drone Kimera/LiORF CBS setup,
+factor semantics, belief windows, and report interpretation, see
+[`docs/project_understanding.md`](docs/project_understanding.md).
+
 ## Reproducibility
 
 The `.repos` files pin exact commit SHAs matching this workspace's committed
