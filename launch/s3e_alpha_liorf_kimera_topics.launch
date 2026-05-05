@@ -29,6 +29,8 @@
   <arg name="cbs_use_raw_previous_belief_gate" default="false"/>
   <arg name="cbs_use_temporary_cbs_prior_factors" default="false"/>
   <arg name="cbs_use_temporary_cbs_linear_priors" default="true"/>
+  <arg name="cbs_belief_factor_mode" default="prior"/>
+  <arg name="cbs_use_sender_conditional_odom_factors" default="true"/>
   <arg name="cbs_temporary_linear_already_applied_gate_enable" default="true"/>
   <arg name="cbs_temporary_linear_already_applied_metric_threshold" default="0.01"/>
   <arg name="cbs_temporary_linear_already_applied_dmu_threshold" default="0.001"/>
@@ -57,6 +59,10 @@
   <arg name="liorf_cbs_belief_out_topic" default="/kimera/cbs/belief_in"/>
   <arg name="kimera_cbs_belief_in_topic" default="/kimera/cbs/belief_in"/>
   <arg name="kimera_cbs_belief_out_topic" default="/kimera/cbs/belief_out"/>
+  <arg name="liorf_cbs_odom_belief_in_topic" default="/kimera/cbs/odom_belief_out"/>
+  <arg name="liorf_cbs_odom_belief_out_topic" default="/kimera/cbs/odom_belief_in"/>
+  <arg name="kimera_cbs_odom_belief_in_topic" default="/kimera/cbs/odom_belief_in"/>
+  <arg name="kimera_cbs_odom_belief_out_topic" default="/kimera/cbs/odom_belief_out"/>
 
   <param if="$(eval arg('rerun_recording_id') == '')"
          name="/cbsms/rerun_recording_id"
@@ -89,6 +95,10 @@
          value="$(arg cbs_use_temporary_cbs_prior_factors)"/>
     <arg name="cbs_use_temporary_cbs_linear_priors"
          value="$(arg cbs_use_temporary_cbs_linear_priors)"/>
+    <arg name="cbs_belief_factor_mode"
+         value="$(arg cbs_belief_factor_mode)"/>
+    <arg name="cbs_use_sender_conditional_odom_factors"
+         value="$(arg cbs_use_sender_conditional_odom_factors)"/>
     <arg name="cbs_temporary_linear_already_applied_gate_enable"
          value="$(arg cbs_temporary_linear_already_applied_gate_enable)"/>
     <arg name="cbs_temporary_linear_already_applied_metric_threshold"
@@ -101,6 +111,10 @@
     <arg name="cbs_k2l_prior_factor_covariance_scale"
          value="$(arg liorf_cbs_k2l_prior_factor_covariance_scale)"/>
     <arg name="cbs_belief_bridge_enable" value="$(arg enable_cbs_bridge)"/>
+    <arg name="cbs_odom_belief_in_topic"
+         value="$(arg liorf_cbs_odom_belief_in_topic)"/>
+    <arg name="cbs_odom_belief_out_topic"
+         value="$(arg liorf_cbs_odom_belief_out_topic)"/>
     <arg name="cbs_belief_exchange_window_size"
          value="$(arg liorf_belief_exchange_window_size)"/>
     <arg name="cbs_l2k_cov_audit_enable"
@@ -143,6 +157,10 @@
     <arg name="cbs_belief_bridge_enable" value="$(arg enable_cbs_bridge)"/>
     <arg name="cbs_belief_in_topic" value="$(arg kimera_cbs_belief_in_topic)"/>
     <arg name="cbs_belief_out_topic" value="$(arg kimera_cbs_belief_out_topic)"/>
+    <arg name="cbs_odom_belief_in_topic"
+         value="$(arg kimera_cbs_odom_belief_in_topic)"/>
+    <arg name="cbs_odom_belief_out_topic"
+         value="$(arg kimera_cbs_odom_belief_out_topic)"/>
     <arg name="cbs_external_belief_timestamp_tolerance_sec"
          value="$(arg kimera_belief_timestamp_tolerance_sec)"/>
     <arg name="cbs_enable_soft_reset" value="$(arg cbs_enable_soft_reset)"/>
@@ -154,6 +172,10 @@
          value="$(arg cbs_use_temporary_cbs_prior_factors)"/>
     <arg name="cbs_use_temporary_cbs_linear_priors"
          value="$(arg cbs_use_temporary_cbs_linear_priors)"/>
+    <arg name="cbs_belief_factor_mode"
+         value="$(arg cbs_belief_factor_mode)"/>
+    <arg name="cbs_use_sender_conditional_odom_factors"
+         value="$(arg cbs_use_sender_conditional_odom_factors)"/>
     <arg name="cbs_temporary_linear_already_applied_gate_enable"
          value="$(arg cbs_temporary_linear_already_applied_gate_enable)"/>
     <arg name="cbs_temporary_linear_already_applied_metric_threshold"

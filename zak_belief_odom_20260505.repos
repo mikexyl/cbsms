@@ -1,0 +1,21 @@
+repositories:
+  src/cbs:
+    type: git
+    url: git@github.com:Zakyera/cbs.git
+    version: zak/belief-odom-conditional-20260505
+  src/liorf:
+    type: git
+    url: git@github.com:Zakyera/liorf.git
+    version: zak/belief-odom-conditional-20260505
+  src/Kimera-VIO:
+    type: git
+    url: git@github.com:Zakyera/Kimera-VIO.git
+    version: zak/belief-odom-conditional-20260505
+  src/Kimera-VIO-ROS:
+    type: git
+    url: git@github.com:Zakyera/Kimera-VIO-ROS.git
+    version: zak/belief-odom-conditional-20260505
+  src/rerun_sdk:
+    type: git
+    url: git@github.com:mikexyl/rerun_sdk.git
+    version: e6d6c1b3976410ee1594ae0ea67e6048f6bd364c
