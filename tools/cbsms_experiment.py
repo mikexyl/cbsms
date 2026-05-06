@@ -98,9 +98,6 @@ TEMPORARY_LINEAR_ACCOUNTING_ACTIONS = {
     "applied_incremental",
 }
 PREINJECTION_RESIDUAL_ACTIONS = {
-    "temporary_linear_applied",
-    "temporary_prior_factor_applied",
-    "persistent_prior_applied",
     "temporary_linear_odom_applied",
     "temporary_odom_factor_applied",
     "persistent_odom_applied",
@@ -637,7 +634,7 @@ def parse_log_artifacts(log_paths: Sequence[Path]) -> Dict[str, Any]:
                                 f"{marker}:malformed_temporary_linearization_residual"
                             ] += 1
                             continue
-                        if marker == "CBS_MARGINALIZATION_GRAPH_ROW" and len(row) < 13:
+                        if marker == "CBS_MARGINALIZATION_GRAPH_ROW" and len(row) < 12:
                             skipped_rows[f"{marker}:malformed_marginalization_graph"] += 1
                             continue
 
@@ -1029,10 +1026,9 @@ def parse_log_artifacts(log_paths: Sequence[Path]) -> Dict[str, Any]:
                                     "kept_factor_count": to_float(row[6]),
                                     "removed_total": to_float(row[7]),
                                     "removed_outside_active": to_float(row[8]),
-                                    "removed_tracked_cbs_prior": to_float(row[9]),
-                                    "removed_pose_belief": to_float(row[10]),
-                                    "removed_anchor_belief": to_float(row[11]),
-                                    "tmp_marginals": row[12] == "true",
+                                    "removed_tracked_cbs_factor": to_float(row[9]),
+                                    "removed_anchor_belief": to_float(row[10]),
+                                    "tmp_marginals": row[11] == "true",
                                 }
                             )
 
@@ -1613,11 +1609,8 @@ def marginalization_graph_summary(rows_in: List[Dict[str, Any]]) -> List[Dict[st
                 "removed_outside_active_mean": numeric_stats(
                     row.get("removed_outside_active") for row in values
                 )["mean"],
-                "removed_tracked_cbs_prior_sum": numeric_stats(
-                    row.get("removed_tracked_cbs_prior") for row in values
-                )["sum"],
-                "removed_pose_belief_sum": numeric_stats(
-                    row.get("removed_pose_belief") for row in values
+                "removed_tracked_cbs_factor_sum": numeric_stats(
+                    row.get("removed_tracked_cbs_factor") for row in values
                 )["sum"],
                 "removed_anchor_belief_sum": numeric_stats(
                     row.get("removed_anchor_belief") for row in values
@@ -2421,7 +2414,7 @@ def render_markdown_report(run_dir: Path, manifest: Dict[str, Any], summary: Dic
     if temporary_linear:
         lines.append("## Temporary Linear Accounting\n")
         lines.append(
-            "Temporary-linear CBS priors are non-persistent. This table reports "
+            "Temporary-linear CBS odometry factors are non-persistent. This table reports "
             "which accepted beliefs were actually applied as temporary linear "
             "updates and which near-identical already-applied beliefs were "
             "skipped to prevent repeated impulses.\n"
@@ -2464,10 +2457,8 @@ def render_markdown_report(run_dir: Path, manifest: Dict[str, Any], summary: Dic
     if belief_odom:
         lines.append("## Belief Odometry Factors\n")
         lines.append(
-            "In `odom_between` mode, sender-computed belief odometry edges are "
-            "matched to receiver key pairs. The strict temporary-linear path uses "
-            "the sender conditional matrix `A` with covariance `Q`; fallback paths "
-            "use relative `BetweenFactor<Pose3>` constraints.\n"
+            "Sender-computed belief odometry edges are matched to receiver key "
+            "pairs and inserted as relative `BetweenFactor<Pose3>` constraints.\n"
         )
         lines.append(
             markdown_table(
@@ -2489,9 +2480,7 @@ def render_markdown_report(run_dir: Path, manifest: Dict[str, Any], summary: Dic
     if preinj:
         lines.append("## Pre-Injection Residuals\n")
         lines.append(
-            "For unary priors, these rows compare the receiver's current local pose "
-            "estimate against the incoming CBS prior pose. For odometry factors, "
-            "they compare the receiver's relative motion against the incoming "
+            "These rows compare the receiver's relative motion against the incoming "
             "belief-relative motion before insertion. Translation values are in "
             "meters; yaw is reported as absolute degrees.\n"
         )
@@ -2537,7 +2526,7 @@ def render_markdown_report(run_dir: Path, manifest: Dict[str, Any], summary: Dic
         lines.append(
             "These rows are logged inside GTSAM at the exact point where "
             "`temporaryFactorsForDelta` are linearized against `theta_`. They "
-            "are the residuals seen by the temporary CBS prior in the linear "
+            "are the residuals seen by the temporary CBS factor in the linear "
             "delta solve, after the regular local iSAM2 update/relinearization "
             "for that cycle.\n"
         )
@@ -2670,8 +2659,7 @@ def render_markdown_report(run_dir: Path, manifest: Dict[str, Any], summary: Dic
                     "input factors mean",
                     "kept factors mean",
                     "removed outside mean",
-                    "removed CBS prior sum",
-                    "removed pose belief sum",
+                    "removed CBS factor sum",
                     "removed anchor sum",
                 ],
                 [
@@ -2686,8 +2674,7 @@ def render_markdown_report(run_dir: Path, manifest: Dict[str, Any], summary: Dic
                         row.get("input_factors_mean", math.nan),
                         row.get("kept_factors_mean", math.nan),
                         row.get("removed_outside_active_mean", math.nan),
-                        row.get("removed_tracked_cbs_prior_sum", math.nan),
-                        row.get("removed_pose_belief_sum", math.nan),
+                        row.get("removed_tracked_cbs_factor_sum", math.nan),
                         row.get("removed_anchor_belief_sum", math.nan),
                     ]
                     for row in marg_graph
