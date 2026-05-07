@@ -49,6 +49,15 @@ ROW_MARKERS = (
     "CBS_TEMPORARY_LINEAR_ACCOUNTING_ROW",
     "CBS_PREINJECTION_RESIDUAL_ROW",
     "CBS_BELIEF_ODOM_ROW",
+    "CBS_ODOM_OUTGOING_ROW",
+    "CBS_ODOM_INTERVAL_ROW_L2K",
+    "CBS_ODOM_INTERVAL_ROW_K2L",
+    "CBS_ODOM_MATCH_ROW_L2K",
+    "CBS_ODOM_MATCH_ROW_K2L",
+    "CBS_ODOM_RETRY_ROW_L2K",
+    "CBS_ODOM_RETRY_ROW_K2L",
+    "CBS_BPSAM_ODOM_ADD_ROW_L2K",
+    "CBS_BPSAM_ODOM_ADD_ROW_K2L",
     "CBS_ODOM_PREINJECTION_RESIDUAL_ROW",
     "CBS_TEMPORARY_LINEARIZATION_RESIDUAL_ROW",
     "CBS_KIMERA_OUTGOING_PROVENANCE_ROW",
@@ -537,10 +546,17 @@ def parse_log_artifacts(log_paths: Sequence[Path]) -> Dict[str, Any]:
     temporary_linear_accounting_rows: List[Dict[str, Any]] = []
     preinjection_residual_rows: List[Dict[str, Any]] = []
     belief_odom_rows: List[Dict[str, Any]] = []
+    odom_outgoing_rows: List[Dict[str, Any]] = []
+    odom_interval_rows: List[Dict[str, Any]] = []
+    odom_match_rows: List[Dict[str, Any]] = []
+    odom_retry_rows: List[Dict[str, Any]] = []
+    bpsam_odom_add_rows: List[Dict[str, Any]] = []
     temporary_linearization_residual_rows: List[Dict[str, Any]] = []
     provenance_rows: List[Dict[str, Any]] = []
     marginalization_graph_rows: List[Dict[str, Any]] = []
     kimera_flow_rows: List[Dict[str, int]] = []
+    kimera_odom_flow_rows: List[Dict[str, int]] = []
+    liorf_odom_flow_rows: List[Dict[str, int]] = []
     alignment_rows: List[Dict[str, float]] = []
     skipped_rows: Counter[str] = Counter()
 
@@ -555,6 +571,26 @@ def parse_log_artifacts(log_paths: Sequence[Path]) -> Dict[str, Any]:
         r"bpsam_inactive_window=(?P<bpsam_inactive_window>\d+),"
         r"bpsam_shape=(?P<bpsam_shape>\d+),"
         r"bpsam_exception=(?P<bpsam_exception>\d+)"
+    )
+    kimera_odom_flow_re = re.compile(
+        r"Kimera CBS incoming odometry flow: pending_odom=(?P<pending_odom>\d+) "
+        r"resolved=(?P<resolved>\d+) bpsam_added=(?P<bpsam_added>\d+) "
+        r"rejected=(?P<rejected>\d+)(?: retried=(?P<retried>\d+))? "
+        r"rejected_by\(window=(?P<window>\d+),timestamp=(?P<timestamp>\d+),"
+        r"state=(?P<state>\d+),covariance=(?P<covariance>\d+),"
+        r"bpsam=(?P<bpsam>\d+),bpsam_first_message=(?P<bpsam_first_message>\d+),"
+        r"bpsam_update_status=(?P<bpsam_update_status>\d+),"
+        r"bpsam_inactive_window=(?P<bpsam_inactive_window>\d+),"
+        r"bpsam_shape=(?P<bpsam_shape>\d+),"
+        r"bpsam_exception=(?P<bpsam_exception>\d+)"
+    )
+    liorf_odom_flow_re = re.compile(
+        r"LiORF CBS incoming odometry flow: dequeued=(?P<dequeued>\d+) "
+        r"matched=(?P<matched>\d+) dropped=(?P<dropped>\d+)"
+        r"(?: retried=(?P<retried>\d+))? "
+        r"bpsam\(added=(?P<added>\d+),rejected=(?P<rejected>\d+),"
+        r"inactive_window=(?P<inactive_window>\d+),shape=(?P<shape>\d+),"
+        r"exception=(?P<exception>\d+)\)"
     )
     alignment_re = re.compile(
         r"Kimera Rerun world alignment initialized .* dt=(?P<dt_ms>[-+0-9.eE]+) ms"
@@ -571,6 +607,22 @@ def parse_log_artifacts(log_paths: Sequence[Path]) -> Dict[str, Any]:
                 if flow_match:
                     kimera_flow_rows.append(
                         {key: int(value) for key, value in flow_match.groupdict().items()}
+                    )
+                kimera_odom_flow_match = kimera_odom_flow_re.search(line)
+                if kimera_odom_flow_match:
+                    kimera_odom_flow_rows.append(
+                        {
+                            key: int(value) if value is not None else 0
+                            for key, value in kimera_odom_flow_match.groupdict().items()
+                        }
+                    )
+                liorf_odom_flow_match = liorf_odom_flow_re.search(line)
+                if liorf_odom_flow_match:
+                    liorf_odom_flow_rows.append(
+                        {
+                            key: int(value) if value is not None else 0
+                            for key, value in liorf_odom_flow_match.groupdict().items()
+                        }
                     )
 
                 alignment_match = alignment_re.search(line)
@@ -621,6 +673,21 @@ def parse_log_artifacts(log_paths: Sequence[Path]) -> Dict[str, Any]:
                             continue
                         if marker == "CBS_BELIEF_ODOM_ROW" and len(row) < 10:
                             skipped_rows[f"{marker}:malformed_belief_odom"] += 1
+                            continue
+                        if marker == "CBS_ODOM_OUTGOING_ROW" and len(row) < 10:
+                            skipped_rows[f"{marker}:malformed_odom_outgoing"] += 1
+                            continue
+                        if marker.startswith("CBS_ODOM_INTERVAL_ROW") and len(row) < 9:
+                            skipped_rows[f"{marker}:malformed_odom_interval"] += 1
+                            continue
+                        if marker.startswith("CBS_ODOM_MATCH_ROW") and len(row) < 13:
+                            skipped_rows[f"{marker}:malformed_odom_match"] += 1
+                            continue
+                        if marker.startswith("CBS_ODOM_RETRY_ROW") and len(row) < 8:
+                            skipped_rows[f"{marker}:malformed_odom_retry"] += 1
+                            continue
+                        if marker.startswith("CBS_BPSAM_ODOM_ADD_ROW") and len(row) < 6:
+                            skipped_rows[f"{marker}:malformed_bpsam_odom_add"] += 1
                             continue
                         if marker == "CBS_ODOM_PREINJECTION_RESIDUAL_ROW" and (
                             len(row) < 14 or row[6] not in PREINJECTION_RESIDUAL_ACTIONS
@@ -945,6 +1012,76 @@ def parse_log_artifacts(log_paths: Sequence[Path]) -> Dict[str, Any]:
                                     "odom_trace": to_float(row[9]),
                                 }
                             )
+                        elif marker == "CBS_ODOM_OUTGOING_ROW":
+                            odom_outgoing_rows.append(
+                                {
+                                    "direction": row[1],
+                                    "sender_robot": row[2],
+                                    "receiver_robot": row[3],
+                                    "from_key": row[4],
+                                    "to_key": row[5],
+                                    "from_trace": to_float(row[6]),
+                                    "to_trace": to_float(row[7]),
+                                    "odom_trace": to_float(row[8]),
+                                    "status": row[9],
+                                }
+                            )
+                        elif marker.startswith("CBS_ODOM_INTERVAL_ROW"):
+                            odom_interval_rows.append(
+                                {
+                                    "direction": row[0].replace("CBS_ODOM_INTERVAL_ROW_", ""),
+                                    "source": row[1],
+                                    "horizon_sec": to_float(row[2]),
+                                    "sender_edge": row[3],
+                                    "from_stamp_sec": to_float(row[4]),
+                                    "to_stamp_sec": to_float(row[5]),
+                                    "duration_sec": to_float(row[6]),
+                                    "covariance_trace": to_float(row[7]),
+                                    "status": row[8],
+                                }
+                            )
+                        elif marker.startswith("CBS_ODOM_MATCH_ROW"):
+                            odom_match_rows.append(
+                                {
+                                    "direction": row[0].replace("CBS_ODOM_MATCH_ROW_", ""),
+                                    "sender_edge": row[1],
+                                    "from_stamp_sec": to_float(row[2]),
+                                    "to_stamp_sec": to_float(row[3]),
+                                    "receiver_edge": row[4],
+                                    "from_best_stamp_sec": to_float(row[5]),
+                                    "to_best_stamp_sec": to_float(row[6]),
+                                    "from_abs_dt": to_float(row[7]),
+                                    "to_abs_dt": to_float(row[8]),
+                                    "tolerance_sec": to_float(row[9]),
+                                    "from_reason": row[10],
+                                    "to_reason": row[11],
+                                    "decision": row[12],
+                                }
+                            )
+                        elif marker.startswith("CBS_ODOM_RETRY_ROW"):
+                            odom_retry_rows.append(
+                                {
+                                    "direction": row[0].replace("CBS_ODOM_RETRY_ROW_", ""),
+                                    "sender_edge": row[1],
+                                    "from_stamp_sec": to_float(row[2]),
+                                    "to_stamp_sec": to_float(row[3]),
+                                    "age_sec": to_float(row[4]),
+                                    "max_age_sec": to_float(row[5]),
+                                    "reason": row[6],
+                                    "decision": row[7],
+                                }
+                            )
+                        elif marker.startswith("CBS_BPSAM_ODOM_ADD_ROW"):
+                            bpsam_odom_add_rows.append(
+                                {
+                                    "direction": row[0].replace("CBS_BPSAM_ODOM_ADD_ROW_", ""),
+                                    "sender_edge": row[1],
+                                    "receiver_edge": row[2],
+                                    "status_code": row[3],
+                                    "covariance_trace": to_float(row[4]),
+                                    "message": row[5],
+                                }
+                            )
                         elif marker == "CBS_ODOM_PREINJECTION_RESIDUAL_ROW":
                             preinjection_residual_rows.append(
                                 {
@@ -1042,10 +1179,17 @@ def parse_log_artifacts(log_paths: Sequence[Path]) -> Dict[str, Any]:
         "temporary_linear_accounting": temporary_linear_accounting_rows,
         "preinjection_residual": preinjection_residual_rows,
         "belief_odom": belief_odom_rows,
+        "odom_outgoing": odom_outgoing_rows,
+        "odom_interval": odom_interval_rows,
+        "odom_match": odom_match_rows,
+        "odom_retry": odom_retry_rows,
+        "bpsam_odom_add": bpsam_odom_add_rows,
         "temporary_linearization_residual": temporary_linearization_residual_rows,
         "provenance": provenance_rows,
         "marginalization_graph": marginalization_graph_rows,
         "kimera_flow": kimera_flow_rows,
+        "kimera_odom_flow": kimera_odom_flow_rows,
+        "liorf_odom_flow": liorf_odom_flow_rows,
         "alignment": alignment_rows,
         "skipped_rows": dict(skipped_rows),
     }
@@ -2109,6 +2253,11 @@ def generate_report(run_dir: Path, gt_path: Optional[Path] = None) -> Dict[str, 
         parsed["preinjection_residual"],
     )
     write_dicts_csv(artifacts_dir / "cbs_belief_odom.csv", parsed["belief_odom"])
+    write_dicts_csv(artifacts_dir / "cbs_odom_outgoing.csv", parsed["odom_outgoing"])
+    write_dicts_csv(artifacts_dir / "cbs_odom_intervals.csv", parsed["odom_interval"])
+    write_dicts_csv(artifacts_dir / "cbs_odom_matches.csv", parsed["odom_match"])
+    write_dicts_csv(artifacts_dir / "cbs_odom_retries.csv", parsed["odom_retry"])
+    write_dicts_csv(artifacts_dir / "cbs_bpsam_odom_add.csv", parsed["bpsam_odom_add"])
     write_dicts_csv(
         artifacts_dir / "cbs_temporary_linearization_residuals.csv",
         parsed["temporary_linearization_residual"],
@@ -2167,6 +2316,29 @@ def generate_report(run_dir: Path, gt_path: Optional[Path] = None) -> Dict[str, 
         ),
         "preinjection_residual_counts": direction_counts(parsed["preinjection_residual"]),
         "belief_odom_counts": direction_counts(parsed["belief_odom"]),
+        "odom_outgoing_counts": direction_counts(parsed["odom_outgoing"]),
+        "odom_interval_counts": direction_counts(parsed["odom_interval"]),
+        "odom_match_decisions_by_direction": {
+            direction: counter_dict(
+                [row for row in parsed["odom_match"] if row.get("direction") == direction],
+                "decision",
+            )
+            for direction in sorted(direction_counts(parsed["odom_match"]))
+        },
+        "odom_retry_decisions_by_direction": {
+            direction: counter_dict(
+                [row for row in parsed["odom_retry"] if row.get("direction") == direction],
+                "decision",
+            )
+            for direction in sorted(direction_counts(parsed["odom_retry"]))
+        },
+        "bpsam_odom_add_status_by_direction": {
+            direction: counter_dict(
+                [row for row in parsed["bpsam_odom_add"] if row.get("direction") == direction],
+                "message",
+            )
+            for direction in sorted(direction_counts(parsed["bpsam_odom_add"]))
+        },
         "temporary_linearization_residual_counts": direction_counts(
             parsed["temporary_linearization_residual"]
         ),
@@ -2193,6 +2365,8 @@ def generate_report(run_dir: Path, gt_path: Optional[Path] = None) -> Dict[str, 
             for direction in sorted(direction_counts(parsed["bpsam_add"]))
         },
         "kimera_flow_totals": sum_kimera_flow(parsed["kimera_flow"]),
+        "kimera_odom_flow_totals": sum_kimera_flow(parsed["kimera_odom_flow"]),
+        "liorf_odom_flow_totals": sum_kimera_flow(parsed["liorf_odom_flow"]),
         "alignment": parsed["alignment"],
         "trajectory_metrics": trajectory_rows,
         "evo_metrics": evo_rows,
@@ -2586,10 +2760,54 @@ def render_markdown_report(run_dir: Path, manifest: Dict[str, Any], summary: Dic
             bpsam_rows.append([direction, status, count])
     lines.append(markdown_table(["direction", "status", "count"], bpsam_rows))
 
+    odom_outgoing = summary.get("odom_outgoing_counts", {})
+    if odom_outgoing:
+        lines.append("### CBS odometry outgoing rows\n")
+        lines.append(markdown_table(["direction", "count"], sorted(odom_outgoing.items())))
+
+    odom_intervals = summary.get("odom_interval_counts", {})
+    if odom_intervals:
+        lines.append("### CBS odometry interval rows\n")
+        lines.append(markdown_table(["direction", "count"], sorted(odom_intervals.items())))
+
+    odom_match_rows = []
+    for direction, counts in summary.get("odom_match_decisions_by_direction", {}).items():
+        for decision, count in sorted(counts.items()):
+            odom_match_rows.append([direction, decision, count])
+    if odom_match_rows:
+        lines.append("### CBS odometry match decisions\n")
+        lines.append(markdown_table(["direction", "decision", "count"], odom_match_rows))
+
+    odom_retry_rows = []
+    for direction, counts in summary.get("odom_retry_decisions_by_direction", {}).items():
+        for decision, count in sorted(counts.items()):
+            odom_retry_rows.append([direction, decision, count])
+    if odom_retry_rows:
+        lines.append("### CBS odometry retry decisions\n")
+        lines.append(markdown_table(["direction", "decision", "count"], odom_retry_rows))
+
+    bpsam_odom_rows = []
+    for direction, counts in summary.get("bpsam_odom_add_status_by_direction", {}).items():
+        for message, count in sorted(counts.items()):
+            bpsam_odom_rows.append([direction, message, count])
+    if bpsam_odom_rows:
+        lines.append("### BPSAM odometry add rows\n")
+        lines.append(markdown_table(["direction", "message", "count"], bpsam_odom_rows))
+
     kimera_flow = summary.get("kimera_flow_totals", {})
     if kimera_flow:
         lines.append("### Kimera incoming flow totals\n")
         lines.append(markdown_table(["counter", "sum"], sorted(kimera_flow.items())))
+
+    kimera_odom_flow = summary.get("kimera_odom_flow_totals", {})
+    if kimera_odom_flow:
+        lines.append("### Kimera incoming odometry flow totals\n")
+        lines.append(markdown_table(["counter", "sum"], sorted(kimera_odom_flow.items())))
+
+    liorf_odom_flow = summary.get("liorf_odom_flow_totals", {})
+    if liorf_odom_flow:
+        lines.append("### LiORF incoming odometry flow totals\n")
+        lines.append(markdown_table(["counter", "sum"], sorted(liorf_odom_flow.items())))
 
     merge_quality = summary.get("merge_quality_summary", [])
     if merge_quality:
