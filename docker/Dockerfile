@@ -69,6 +69,36 @@ RUN apt-get update && \
 
 RUN python3 -m pip install --no-cache-dir "cmake>=3.26,<3.29"
 
+ARG EIGEN_VERSION=3.4.0
+ARG ONETBB_VERSION=2021.13.0
+
+RUN set -euxo pipefail; \
+    tmp_dir="$(mktemp -d)"; \
+    curl -fsSL \
+      "https://gitlab.com/libeigen/eigen/-/archive/${EIGEN_VERSION}/eigen-${EIGEN_VERSION}.tar.gz" \
+      -o "${tmp_dir}/eigen.tar.gz"; \
+    tar -xzf "${tmp_dir}/eigen.tar.gz" -C "${tmp_dir}"; \
+    cmake -S "${tmp_dir}/eigen-${EIGEN_VERSION}" \
+      -B "${tmp_dir}/eigen-build" \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/usr/local \
+      -DEIGEN_BUILD_DOC=OFF \
+      -DBUILD_TESTING=OFF; \
+    cmake --build "${tmp_dir}/eigen-build" --target install; \
+    curl -fsSL \
+      "https://github.com/oneapi-src/oneTBB/archive/refs/tags/v${ONETBB_VERSION}.tar.gz" \
+      -o "${tmp_dir}/onetbb.tar.gz"; \
+    tar -xzf "${tmp_dir}/onetbb.tar.gz" -C "${tmp_dir}"; \
+    cmake -S "${tmp_dir}/oneTBB-${ONETBB_VERSION}" \
+      -B "${tmp_dir}/onetbb-build" \
+      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_INSTALL_PREFIX=/usr/local \
+      -DTBB_TEST=OFF \
+      -DTBB_STRICT=OFF; \
+    cmake --build "${tmp_dir}/onetbb-build" --target install -j"$(nproc)"; \
+    ldconfig; \
+    rm -rf "${tmp_dir}"
+
 ARG CBSMS_UID=1000
 ARG CBSMS_GID=1000
 
@@ -82,7 +112,9 @@ RUN if ! getent group "${CBSMS_GID}" >/dev/null; then \
     chown -R "${CBSMS_UID}:${CBSMS_GID}" /home/cbsms /workspace
 
 ENV CMAKE_PREFIX_PATH=/usr/local:/opt/ros/noetic
-ENV LD_LIBRARY_PATH=/usr/local/lib:${LD_LIBRARY_PATH}
+ENV Eigen3_DIR=/usr/local/share/eigen3/cmake
+ENV TBB_DIR=/usr/local/lib/cmake/TBB
+ENV LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64:${LD_LIBRARY_PATH}
 ENV CCACHE_DIR=/workspace/.ccache
 
 WORKDIR /workspace

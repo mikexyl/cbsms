@@ -5,6 +5,7 @@
   <arg name="bag_rate" default="1.0"/>
   <arg name="bag_start" default="0.0"/>
   <arg name="bag_duration" default="60.0"/>
+  <arg name="shutdown_on_bag_finish" default="true"/>
   <arg name="rerun_visualizer_enable" default="true"/>
   <arg name="rerun_recording_id" default=""/>
   <arg name="rerun_host" default="rerun+http://172.18.0.1:9876/proxy"/>
@@ -204,5 +205,6 @@
         type="play"
         name="s3e_bag_play"
         output="screen"
+        required="$(arg shutdown_on_bag_finish)"
         args="--clock --rate=$(arg bag_rate) --start=$(arg bag_start) --duration=$(arg bag_duration) $(arg bag_path)"/>
 </launch>

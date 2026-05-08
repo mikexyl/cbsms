@@ -1,8 +1,8 @@
 repositories:
   src/gtsam:
     type: git
-    url: git@github.com:mikexyl/gtsam.git
-    version: c1a57d471b920dcba5add66289d56280217c1b00
+    url: https://github.com/borglab/gtsam.git
+    version: d9cde78de8f4c9352974a90f09fd98d893858641
   src/aria_common:
     type: git
     url: git@github.com:mikexyl/aria_common.git
@@ -10,7 +10,7 @@ repositories:
   src/aria_viz:
     type: git
     url: git@github.com:mikexyl/aria_visualization.git
-    version: da78bcc1fc9cae49e7c3d6a64d74b9b79df2ce8e
+    version: f88b0ddfc54e547e4b703b86156e259ac0a25d35
   src/Kimera-RPGO:
     type: git
     url: https://github.com/MIT-SPARK/Kimera-RPGO.git

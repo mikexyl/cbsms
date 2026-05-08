@@ -3,10 +3,13 @@
 This image provides the OS and ROS tooling needed to build the CBSMS ROS 1
 workspace on top of `cuda-ros-base:noetic`.
 
-The Dockerfile does not compile source dependencies. Source dependencies are
-workspace packages imported or provided under `src/`:
+The Dockerfile installs the toolchain pieces needed by the current GTSAM
+develop branch, including Eigen 3.4.0 and oneTBB 2021.13.0 under `/usr/local`.
+Source dependencies remain workspace packages imported or provided under
+`src/`:
 
-- `gtsam` from tag `4.1.1`
+- `gtsam` from the official develop branch at commit
+  `d9cde78de8f4c9352974a90f09fd98d893858641` (4.3)
 - `aria_common` from branch `kimera-ros2`
 - `aria_viz` from branch `kimera-ros2`
 - `rerun_sdk`, a local vendor package that downloads the Rerun C++ SDK during
@@ -39,8 +42,10 @@ when present, otherwise from `src/cbsms/cbsms.repos`, plus
 `src/cbsms/docker/cbsms.dependencies.repos`. The package-local manifest is the
 self-contained bootstrap source for fresh workspaces.
 
-Current first-party entries are pinned to exact commits. Branch names for
-orientation are:
+Current first-party manifest entries are pinned to exact commits. The GTSAM 4.3
+migration work uses package-local branches named `cbsms/gtsam-4.3-develop` for
+the packages that need source changes. Existing branch names for orientation
+are:
 
 - `cbs`: `fresh-rebuild`
 - `liorf`: `dev/cbsms`
@@ -56,5 +61,7 @@ The Aria dependencies use the latest branch by commit date, `kimera-ros2`, from:
 The catkin configuration follows Kimera's recommended `--merge-devel` workflow
 and GTSAM flags: Release build, TBB, unstable symbols, full Expmap retractions,
 system Eigen/Metis, no tangent preintegration, no GTSAM tests/examples, and no
-`march=native`. LIORF does not publish extra catkin flags; its package CMake
-sets Release, C++17, `-O3 -Wall -g -pthread` internally.
+`march=native`. The workspace build script also passes a narrow warning-policy
+override so current upstream GTSAM develop warnings do not fail the Release
+build. LIORF does not publish extra catkin flags; its package CMake sets
+Release, C++17, `-O3 -Wall -g -pthread` internally.

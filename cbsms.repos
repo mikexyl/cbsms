@@ -2,7 +2,7 @@ repositories:
   src/cbs:
     type: git
     url: git@github.com:mikexyl/cbs.git
-    version: 9803a674179784ce700ec60d825f13cf761c0a4c
+    version: 8826b0e612c6d531be55441bb9d6c5fb6a39cbd6
   src/cbsms_adaptive_weighting:
     type: git
     url: git@github.com:mikexyl/cbsms_adaptive_weighting.git
@@ -10,15 +10,15 @@ repositories:
   src/liorf:
     type: git
     url: git@github.com:mikexyl/liorf.git
-    version: bc5f3898d38cede388257907b2572a32dcf23bfc
+    version: bca4386a7568f0c10b56ab254814ae150da05125
   src/Kimera-VIO:
     type: git
     url: git@github.com:mikexyl/Kimera-VIO.git
-    version: 77ccc7251a2eda7478f60c36be22120fe18f78d2
+    version: 567ca3f3ce2dc8bc1db3cf079fb8b0707dc8d003
   src/Kimera-VIO-ROS:
     type: git
     url: git@github.com:mikexyl/Kimera-VIO-ROS.git
-    version: d829f1f3ea796101a5dbbfa5bba45bbcc223fe66
+    version: 9c13a7ca74b84fbc2edd607331a76153ac4eb52c
   src/rerun_sdk:
     type: git
     url: git@github.com:mikexyl/rerun_sdk.git

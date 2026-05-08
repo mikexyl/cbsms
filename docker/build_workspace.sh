@@ -11,7 +11,9 @@ cd "${workspace}"
 git config --global --add safe.directory '*'
 
 export CMAKE_PREFIX_PATH="/usr/local:/opt/ros/noetic:${CMAKE_PREFIX_PATH:-}"
-export LD_LIBRARY_PATH="/usr/local/lib:${LD_LIBRARY_PATH:-}"
+export Eigen3_DIR="${Eigen3_DIR:-/usr/local/share/eigen3/cmake}"
+export TBB_DIR="${TBB_DIR:-/usr/local/lib/cmake/TBB}"
+export LD_LIBRARY_PATH="/usr/local/lib:/usr/local/lib64:${LD_LIBRARY_PATH:-}"
 export GIT_SSH_COMMAND="${GIT_SSH_COMMAND:-ssh -o StrictHostKeyChecking=accept-new}"
 
 cmake_args=(
@@ -23,6 +25,7 @@ cmake_args=(
   -DGTSAM_BUILD_TESTS=OFF
   -DGTSAM_BUILD_UNSTABLE=ON
   -DGTSAM_BUILD_WITH_MARCH_NATIVE=OFF
+  "-DGTSAM_COMPILE_OPTIONS_PRIVATE_COMMON=-Werror;-Wall;-Wpedantic;-Wextra;-Wno-unused-parameter;-Wno-psabi;-Wreturn-local-addr;-Wreturn-type;-Wformat;-Werror=format-security;-Wno-error=unused-but-set-variable"
   -DGTSAM_INSTALL_MATLAB_TOOLBOX=OFF
   -DGTSAM_POSE3_EXPMAP=ON
   -DGTSAM_ROT3_EXPMAP=ON
