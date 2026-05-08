@@ -10,11 +10,11 @@ repositories:
   src/liorf:
     type: git
     url: git@github.com:mikexyl/liorf.git
-    version: 5f9177a7ed6a205fd8a745bd5bacd4f74d483ab7
+    version: 64d322dcb929c851c0110c12cc239b2d21181cad
   src/Kimera-VIO:
     type: git
     url: git@github.com:mikexyl/Kimera-VIO.git
-    version: 453bc0edaf92ed7c4bbacaa28073d54cf5b3805b
+    version: 3b05fac2ded0cd4f9eceb69d5f0dacee5394d2b4
   src/Kimera-VIO-ROS:
     type: git
     url: git@github.com:mikexyl/Kimera-VIO-ROS.git
