@@ -18,7 +18,7 @@ repositories:
   src/Kimera-VIO-ROS:
     type: git
     url: git@github.com:mikexyl/Kimera-VIO-ROS.git
-    version: a12104d534db9b82e0fa1e9216bb723a8d4acb7f
+    version: 631b498750ce5e9b7332cce134ad5f8c59f6ff4e
   src/rerun_sdk:
     type: git
     url: git@github.com:mikexyl/rerun_sdk.git
