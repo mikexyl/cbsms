@@ -153,12 +153,12 @@ What changed:
   `liorf/pose_odom_belief.msg` and
   `liorf/pose_odom_belief_array.msg`.
 - Publishes outgoing LiORF sender-computed odometry beliefs when
-  `cbs_belief_factor_mode:=odom_between`.
+  `cbs_use_temporary_cbs_linear_factors:=true`.
 - Subscribes to incoming Kimera odometry beliefs and timestamp-matches both
   endpoints to LiORF local keyframes.
 - Wires LiORF launch parameters for:
-  `cbs_belief_factor_mode`, `cbs_use_temporary_cbs_linear_priors`,
-  `cbs_use_sender_conditional_odom_factors`, soft reset, raw previous gate,
+  `removed_factor_mode_flag`, `cbs_use_temporary_cbs_linear_factors`,
+  `removed_sender_conditional_odom_factor_flag`, soft reset, raw previous gate,
   covariance scaling, and odometry belief topics.
 - Calls `bpsam->setMarginalizationGraph(LOCAL)` before exporting beliefs so
   outgoing covariance comes from the cleaned local marginal graph.
@@ -199,9 +199,9 @@ What changed:
 - Exports outgoing Kimera sender-computed odometry beliefs through
   `BPSAM::getOdometryBeliefs(...)`.
 - Wires BPSAM controls:
-  `cbs_belief_factor_mode`,
-  `cbs_use_temporary_cbs_linear_priors`,
-  `cbs_use_sender_conditional_odom_factors`,
+  `removed_factor_mode_flag`,
+  `cbs_use_temporary_cbs_linear_factors`,
+  `removed_sender_conditional_odom_factor_flag`,
   already-applied gate thresholds, raw previous gate, and soft reset.
 - Adds diagnostic/provenance rows for Kimera CBS belief generation and
   covariance sanity.
@@ -305,8 +305,8 @@ Strict sender-conditional mode:
   --no-use-liorf-rviz \
   --no-kimera-visualize \
   --no-rerun-visualizer-enable \
-  --extra-arg cbs_belief_factor_mode:=odom_between \
-  --extra-arg cbs_use_sender_conditional_odom_factors:=true
+  --extra-arg cbs_use_temporary_cbs_linear_factors:=true \
+  --extra-arg removed_sender_conditional_odom_factor_flag:=true
 ```
 
 Plain sender-computed `BetweenFactor` comparison:
@@ -321,8 +321,8 @@ Plain sender-computed `BetweenFactor` comparison:
   --no-use-liorf-rviz \
   --no-kimera-visualize \
   --no-rerun-visualizer-enable \
-  --extra-arg cbs_belief_factor_mode:=odom_between \
-  --extra-arg cbs_use_sender_conditional_odom_factors:=false
+  --extra-arg cbs_use_temporary_cbs_linear_factors:=true \
+  --extra-arg removed_sender_conditional_odom_factor_flag:=false
 ```
 
 ## Observed 60 s Behavior

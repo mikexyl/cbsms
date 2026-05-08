@@ -18,8 +18,8 @@ This is additive. The previous unary prior path is still available.
 The shared launch argument is:
 
 ```bash
-cbs_belief_factor_mode:=prior
-cbs_belief_factor_mode:=odom_between
+cbs_use_temporary_cbs_linear_factors:=false
+cbs_use_temporary_cbs_linear_factors:=true
 ```
 
 `prior` preserves the existing behavior.
@@ -105,7 +105,7 @@ direction.
 The strict path is enabled by:
 
 ```bash
-cbs_use_sender_conditional_odom_factors:=true
+removed_sender_conditional_odom_factor_flag:=true
 ```
 
 When `odom_between`, temporary-linear CBS, and sender-computed odometry are all
@@ -120,7 +120,7 @@ The implementation uses `SenderConditionalPose3Factor`, with anchors frozen at
 the receiver's current `from` estimate and the incoming relative-motion
 prediction for `to`. This approximates Mike's requested posterior conditional
 edge without adding it permanently to the nonlinear graph. If
-`cbs_use_sender_conditional_odom_factors:=false`, the same sender-computed
+`removed_sender_conditional_odom_factor_flag:=false`, the same sender-computed
 message falls back to:
 
 ```text
@@ -171,7 +171,7 @@ experiment was rerun:
   --no-use-liorf-rviz \
   --no-kimera-visualize \
   --no-rerun-visualizer-enable \
-  --extra-arg cbs_belief_factor_mode:=odom_between
+  --extra-arg cbs_use_temporary_cbs_linear_factors:=true
 ```
 
 Run directory:
@@ -204,7 +204,7 @@ the strict `A,Q` factors are very strong and currently destabilize LiORF.
 The same sender-computed odometry transport was then rerun with:
 
 ```bash
---extra-arg cbs_use_sender_conditional_odom_factors:=false
+--extra-arg removed_sender_conditional_odom_factor_flag:=false
 ```
 
 Run directory:
@@ -280,7 +280,7 @@ The full headless odometry-factor run command was:
   --no-use-liorf-rviz \
   --no-kimera-visualize \
   --no-rerun-visualizer-enable \
-  --extra-arg cbs_belief_factor_mode:=odom_between
+  --extra-arg cbs_use_temporary_cbs_linear_factors:=true
 ```
 
 Run directory:

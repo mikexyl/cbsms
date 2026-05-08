@@ -79,7 +79,8 @@ For S3E Alpha, LiORF's CBS exchange window is currently 30 poses:
 cbsBeliefExchangeWindowSize = 30
 ```
 
-So LiORF also sends a window of recent pose beliefs, not only the newest pose.
+So LiORF also sends adjacent odometry beliefs over a recent pose window, not
+only the newest pose.
 
 Relevant files:
 
@@ -89,14 +90,14 @@ Relevant files:
 
 ## What Is Exchanged
 
-The exchanged ROS message is a `pose_belief_array`. Each belief carries:
+The exchanged ROS message is a `pose_odom_belief_array`. Each belief carries:
 
 - source agent id: `k` for Kimera or `l` for LiORF;
-- pose index;
-- timestamp;
-- 6D pose mean in Pose3 tangent coordinates;
-- 6x6 covariance;
-- relaxation/contraction metadata.
+- adjacent source pose indices;
+- endpoint timestamps;
+- 6D relative Pose3 tangent motion;
+- 6x6 odometry covariance;
+- relaxation/contraction metadata for the odometry belief.
 
 Directions in reports:
 

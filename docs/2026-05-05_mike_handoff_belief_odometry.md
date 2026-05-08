@@ -37,7 +37,7 @@ absolute `PriorFactor<Pose3>` constraints. This branch set adds a belief
 odometry mode:
 
 ```bash
-cbs_belief_factor_mode:=odom_between
+cbs_use_temporary_cbs_linear_factors:=true
 ```
 
 In this mode the sender computes consecutive belief odometry edges from its own
@@ -58,7 +58,7 @@ injects an external odometry constraint between the matched receiver poses.
 The new switch:
 
 ```bash
-cbs_use_sender_conditional_odom_factors:=true
+removed_sender_conditional_odom_factor_flag:=true
 ```
 
 selects the strict sender-conditional factor in temporary-linear mode. The
@@ -111,8 +111,8 @@ Strict sender-conditional run:
   --no-use-liorf-rviz \
   --no-kimera-visualize \
   --no-rerun-visualizer-enable \
-  --extra-arg cbs_belief_factor_mode:=odom_between \
-  --extra-arg cbs_use_sender_conditional_odom_factors:=true
+  --extra-arg cbs_use_temporary_cbs_linear_factors:=true \
+  --extra-arg removed_sender_conditional_odom_factor_flag:=true
 ```
 
 Plain sender-computed `BetweenFactor` comparison:
@@ -127,8 +127,8 @@ Plain sender-computed `BetweenFactor` comparison:
   --no-use-liorf-rviz \
   --no-kimera-visualize \
   --no-rerun-visualizer-enable \
-  --extra-arg cbs_belief_factor_mode:=odom_between \
-  --extra-arg cbs_use_sender_conditional_odom_factors:=false
+  --extra-arg cbs_use_temporary_cbs_linear_factors:=true \
+  --extra-arg removed_sender_conditional_odom_factor_flag:=false
 ```
 
 ## Current Technical Status
