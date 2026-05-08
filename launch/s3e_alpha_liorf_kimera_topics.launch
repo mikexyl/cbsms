@@ -36,10 +36,6 @@
   <arg name="kimera_cbs_l2k_odom_factor_covariance_scale" default="1.0"/>
   <arg name="liorf_cbs_k2l_odom_factor_covariance_scale" default="1.0"/>
   <arg name="liorf_belief_exchange_window_size" default="30"/>
-  <arg name="cbs_odom_interval_mode" default="adjacent"/>
-  <arg name="cbs_odom_interval_horizons_sec" default="0.3,0.5,1.0,1.5,2.0"/>
-  <arg name="cbs_odom_interval_horizon_tolerance_sec" default="0.15"/>
-  <arg name="cbs_odom_max_outgoing_beliefs" default="80"/>
   <arg name="cbs_odom_unmatched_retry_max_age_sec" default="5.0"/>
   <arg name="cbs_odom_unmatched_retry_max_beliefs" default="500"/>
   <arg name="liorf_cbs_l2k_cov_audit_enable" default="false"/>
@@ -110,14 +106,6 @@
          value="$(arg liorf_cbs_odom_belief_out_topic)"/>
     <arg name="cbs_belief_exchange_window_size"
          value="$(arg liorf_belief_exchange_window_size)"/>
-    <arg name="cbs_odom_interval_mode"
-         value="$(arg cbs_odom_interval_mode)"/>
-    <arg name="cbs_odom_interval_horizons_sec"
-         value="$(arg cbs_odom_interval_horizons_sec)"/>
-    <arg name="cbs_odom_interval_horizon_tolerance_sec"
-         value="$(arg cbs_odom_interval_horizon_tolerance_sec)"/>
-    <arg name="cbs_odom_max_outgoing_beliefs"
-         value="$(arg cbs_odom_max_outgoing_beliefs)"/>
     <arg name="cbs_odom_unmatched_retry_max_age_sec"
          value="$(arg cbs_odom_unmatched_retry_max_age_sec)"/>
     <arg name="cbs_odom_unmatched_retry_max_beliefs"
@@ -159,14 +147,6 @@
          value="$(arg kimera_cbs_odom_belief_out_topic)"/>
     <arg name="cbs_external_belief_timestamp_tolerance_sec"
          value="$(arg kimera_belief_timestamp_tolerance_sec)"/>
-    <arg name="cbs_odom_interval_mode"
-         value="$(arg cbs_odom_interval_mode)"/>
-    <arg name="cbs_odom_interval_horizons_sec"
-         value="$(arg cbs_odom_interval_horizons_sec)"/>
-    <arg name="cbs_odom_interval_horizon_tolerance_sec"
-         value="$(arg cbs_odom_interval_horizon_tolerance_sec)"/>
-    <arg name="cbs_odom_max_outgoing_beliefs"
-         value="$(arg cbs_odom_max_outgoing_beliefs)"/>
     <arg name="cbs_odom_unmatched_retry_max_age_sec"
          value="$(arg cbs_odom_unmatched_retry_max_age_sec)"/>
     <arg name="cbs_odom_unmatched_retry_max_beliefs"
