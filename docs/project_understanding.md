@@ -189,36 +189,35 @@ They are useful for seeing the CBS contraction behavior, but they should not be
 blindly described as the full final iSAM2 posterior marginal unless that is
 explicitly computed and reported.
 
-## Temporary Linear CBS Prior Mode
+## Temporary Linear CBS Odometry Factor Mode
 
-The first temporary-prior experiment added accepted CBS beliefs as normal
-`PriorFactor<Pose3>` factors, let iSAM2 update once, then removed those factor
-slots before fixed-lag marginalization. That protected marginalization from
-persistent CBS factors, but it was not the same as Mike's intended linear
-Bayes-tree surgery.
+The old external absolute-pose CBS prior path has been removed from the active
+single-drone experiment path. CBS exchange now uses sender-side odometry beliefs:
+the sender computes a relative pose belief between two local poses, and the
+receiver maps that pair to its own active poses and injects a
+`BetweenFactor<Pose3>`.
 
-The newer mode is now the default in the S3E launch files. It is controlled by:
+The temporary-linear factor path is controlled by:
 
 ```text
-cbs_use_temporary_cbs_linear_priors:=true
+cbs_use_temporary_cbs_linear_factors:=true
 ```
 
-Use `cbs_use_temporary_cbs_linear_priors:=false` only when deliberately
-re-running the legacy persistent-prior path for comparison. The default also
-keeps `cbs_enable_soft_reset:=true`, so incoming beliefs are contracted through
-GBP soft reset instead of being mostly hard-rejected by the old reset gate.
+The default also keeps `cbs_enable_soft_reset:=true`, so incoming odometry
+beliefs are contracted through GBP soft reset instead of being mostly
+hard-rejected by the old reset gate.
 
-In this mode, accepted CBS beliefs are still represented as `PriorFactor<Pose3>`
-objects, but they are not inserted into `nonlinearFactors_` or `linearFactors_`.
-Instead:
+In this mode, accepted CBS odometry beliefs are represented as
+`BetweenFactor<Pose3>` objects, but they are not inserted into
+`nonlinearFactors_` or `linearFactors_`. Instead:
 
-1. BPSAM passes the accepted CBS priors through
+1. BPSAM passes the accepted CBS odometry factors through
    `ISAM2UpdateParams::temporaryFactorsForDelta`.
 2. iSAM2 performs the normal local update and rebuilds the clean local Bayes
    tree.
-3. The temporary priors are linearized at the current iSAM2 linearization point.
+3. The temporary factors are linearized at the current iSAM2 linearization point.
 4. iSAM2 builds a temporary Gaussian system from the current clean Bayes-tree
-   clique conditionals plus those linearized priors.
+   clique conditionals plus those linearized factors.
 5. That temporary augmented linear system is solved for the current delta using
    the Bayes-tree elimination ordering.
 6. The temporary delta is retracted into the iSAM2 linearization point
@@ -229,22 +228,12 @@ Instead:
 9. The cached delta is reset to zero, so the fused state is the current estimate
    while future marginalization/covariance work still sees only the clean graph.
 
-This means the current state estimate can be pulled by incoming CBS beliefs,
+This means the current state estimate can be pulled by incoming CBS odometry,
 but the stored nonlinear graph, stored linear factors, and rebuilt Bayes tree do
-not contain those CBS priors. Fixed-lag marginalization therefore cannot absorb
-the received CBS priors into future marginal factors. This now matches Mike's
+not contain those CBS factors. Fixed-lag marginalization therefore cannot absorb
+the received CBS factors into future marginal factors. This now matches Mike's
 intended sequence: linearize, manipulate the linear clique system, update,
 de-manipulate, then relinearize the clean graph.
-
-The older mode remains available as:
-
-```text
-cbs_use_temporary_cbs_prior_factors:=true
-```
-
-Use the newer linear-prior mode for Mike's "linearize, manipulate cliques,
-update, de-manipulate" idea. Use the older factor-slot mode only as a fallback
-or comparison point.
 
 ### Temporary Linear Already-Applied Accounting
 
