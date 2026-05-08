@@ -14,11 +14,11 @@ repositories:
   src/Kimera-VIO:
     type: git
     url: git@github.com:mikexyl/Kimera-VIO.git
-    version: 11c976932c1782958cc07e2d4b5834109b5fc5af
+    version: 453bc0edaf92ed7c4bbacaa28073d54cf5b3805b
   src/Kimera-VIO-ROS:
     type: git
     url: git@github.com:mikexyl/Kimera-VIO-ROS.git
-    version: 8abb47f8484baeb9df5fab735d84ac164f96ed41
+    version: a12104d534db9b82e0fa1e9216bb723a8d4acb7f
   src/rerun_sdk:
     type: git
     url: git@github.com:mikexyl/rerun_sdk.git
